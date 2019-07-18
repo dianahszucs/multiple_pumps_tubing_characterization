@@ -1,0 +1,93 @@
+"""	
+Experiment script title: 	
+Author: 					
+E-mail address: 			
+Date: 						
+Notes: 						
+"""
+
+import laboratory_devices as lab
+import time
+
+### ------- Experiment protocol: insert script between brackets. ------- ###
+if __name__ == "__main__":
+
+    master = lab.locate_master_pump()
+
+    ### ----------------- Create syringes being used ------------------  ###
+    s0 = lab.Syringe(make="HSW Norm-Ject", volume=1)
+    s1 = lab.Syringe(make="HSW Norm-Ject", volume=1)
+    s3 = lab.Syringe(make="HSW Norm-Ject", volume=1)
+
+    ### ---------------- Associate pumps with syringes ----------------  ###
+    p0 = lab.Pump(port=master, address=0, syringe=s0)
+    p1 = lab.Pump(port=master, address=1, syringe=s1)
+    p2 = lab.Pump(port=master, address=2, syringe=s3)
+
+    ### -------------------- List of pump ------------------
+
+    pumps =[p0, p1, p2]
+
+    ### -------------------- Create your experiment -------------------  ###
+### Phase 1 - pulling the substrate liquid through the tubing
+
+	lab.announce("Substrate pulling")
+    lab.check_in("Load the appropriate substrate into the reservoir.")
+    lab.check_in("Pull the liquid all the way through into the tubing.")
+
+    phase1_directions = [
+    	p0.set_direction("infuse"), 
+    	p1.set_direction("infuse"), 
+    	p2.set_direction("infuse")
+    	]
+
+    phase1_volumes = [
+    	p0.set_volume(45.00, "ul"),
+    	p1.set_volume(45.00, "ul"),
+    	p2.set_volume(45.00, "ul")
+    	]
+
+    phase1_rates = [
+    	p0.set_rate(50.00, "ul/min"),
+    	p1.set_rate(50.00, "ul/min"), 
+    	p2.set_rate(50.00, "ul/min")
+    	]
+
+    for i in range(0,3,len(pumps)):
+    	pumps[i].set_direction(phase1_directions[i])
+    	pumps[i].set_volume(phase1_volumes[i])
+    	pumps[i].set_rate(phase1_rates[i])
+
+    for i in range(0,3,len(pumps)):
+    	pumps[i].run()
+
+    wait(wait_time = 
+### Phase 2 - pushing the substrate liquid back all the way through the tubing
+	lab.check_in("Push the liquid all the way through in the tubing.")
+
+	phase2_directions = [
+    	p0.set_direction("withdraw"), 
+    	p1.set_direction("withdraw"), 
+    	p2.set_direction("withdraw")
+    	]
+
+    phase2_volumes = [
+    	p0.set_volume(45.00, "ul"),
+    	p1.set_volume(45.00, "ul"),
+    	p2.set_volume(45.00, "ul")
+    	]
+	phase2_rates = [
+    	p0.set_rate(50.00, "ul/min"),
+    	p1.set_rate(50.00, "ul/min"), 
+    	p2.set_rate(50.00, "ul/min")
+    	]
+
+    for i in range(0,3,len(pumps)):
+    	pumps[i].set_direction(phase2_directions[i])
+    	pumps[i].set_volume(phase2_volumes[i])
+    	pumps[i].set_rate(phase2_rates[i])
+
+    for i in range(0,3,len(pumps)):
+    	pumps[i].run()
+
+    lab.check_in("Good job, the process is done.")
